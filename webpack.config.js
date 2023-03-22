@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin') // Plugin installed wit
 module.exports = {
     mode: 'development',
     entry: {
-      bundle: path.resolve(__dirname, 'src/index.js'),
+      bundle: path.resolve(__dirname, 'src/index.ts'),
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -24,6 +24,15 @@ module.exports = {
     },
     module: {
       rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+        },
         // Without this rule, Webpack interprets everything in src as a JavaScript module
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i, // Javascript RegEx for image files
@@ -36,5 +45,9 @@ module.exports = {
         filename: 'index.html',
         template: 'src/template.html', // What Webpack uses to generate the index.html file
       })
-    ]
+    ],
+    resolve: {
+      // Add .ts and .tsx as a resolvable extension.
+      extensions: [".ts", ".tsx", ".js"]
+    }
   }
