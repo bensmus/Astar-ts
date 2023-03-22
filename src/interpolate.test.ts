@@ -16,6 +16,6 @@ const interpolated: Point[] = [
 
 describe('testing linear interpolation', () => {
     test('interpolates one point', () => {
-        expect(linearInterpol(samples, 1)).toBe(interpolated);
+        expect(linearInterpol(samples, 1)).toStrictEqual(interpolated);
     });
 });
