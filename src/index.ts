@@ -174,7 +174,7 @@ export class Grid {
 
     drawPath() {
         console.log('drawing path')
-        astar(this, diagonalCheckbox.checked)
+        console.log(astar(this, diagonalCheckbox.checked) ? 'path found' : 'path not found')
     }
 
     clearPath() {

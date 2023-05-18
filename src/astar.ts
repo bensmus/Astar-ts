@@ -2,7 +2,7 @@ import { Vector2, CellType, Grid } from "./index"
 
 // 1:1 correspondence: N (number) <-> coor (Vector2) <-> cell (Cell)
 export function astar(grid: Grid, diagonalFlag: boolean) {
-    const [startCoor, targetCoor] = updateGrid(grid, diagonalFlag)
+    const [[startCoor, targetCoor], isPathFound] = updateGrid(grid, diagonalFlag)
     let pathCoor = targetCoor
     while (pathCoor) {
         console.log(pathCoor)
@@ -11,10 +11,11 @@ export function astar(grid: Grid, diagonalFlag: boolean) {
         }
         pathCoor = grid.get(pathCoor).parent
     }
+    return isPathFound
 }
 
 // Update the grid cell 'parent' and 'distance' properties.
-function updateGrid(grid: Grid, diagonalFlag: boolean) {
+function updateGrid(grid: Grid, diagonalFlag: boolean): [Vector2[], boolean] {
     
     // Reset astar distance and parent to default.
     for (let i = 0; i < grid.rows; i++) {
@@ -34,7 +35,7 @@ function updateGrid(grid: Grid, diagonalFlag: boolean) {
     const unvisited = new Set<number>([current])
     const visited = new Set<number>()
     
-    while (current != target && unvisited.size != 0) {
+    while (current != target) {
         const currentCoor = grid.NToCoor(current)
 
         // Get unvisited neighbours.
@@ -54,18 +55,23 @@ function updateGrid(grid: Grid, diagonalFlag: boolean) {
         // Update unvisited and visited. Update current.
         unvisited.delete(current)
         visited.add(current)
-        current = grid.coorToN(
-            getBestUnvisitedCoor(
-                grid,
-                Array.from(unvisited).map(N => grid.NToCoor(N)), 
-                targetCoor,
-                diagonalFlag
-            )
+        const bestUnvisitedCoor = getBestUnvisitedCoor(
+            grid,
+            Array.from(unvisited).map(N => grid.NToCoor(N)), 
+            targetCoor,
+            diagonalFlag
         )
+        
+        if (bestUnvisitedCoor) {
+            current = grid.coorToN(bestUnvisitedCoor)
+        } 
+        else { // Unable to find path.
+            return [endpoints, false]
+        }
     }
     
     // Return target coordinates, going to need it to jump via parent to start.
-    return [startCoor, targetCoor]
+    return [endpoints, true]
 }
 
 // E.g: getNextCoors(new Vector2(0, 0), new Set([1]), grid, true) 
@@ -114,8 +120,8 @@ function getNeighbourCoors(cellCoor: Vector2, mask: Array<Array<boolean>>, diago
 }
 
 // E.g: getBestUnvisitedCoor([new Vector2(0, 1), new Vector2(1, 0)], new Vector2(2, 0))
-function getBestUnvisitedCoor(grid: Grid, unvisitedCoors: Array<Vector2>, targetCoor: Vector2, diagonalFlag: boolean) {
-    let bestUnvisitedCoor: Vector2 | null = null
+function getBestUnvisitedCoor(grid: Grid, unvisitedCoors: Array<Vector2>, targetCoor: Vector2, diagonalFlag: boolean): Vector2 | null {
+    let bestUnvisitedCoor = null
     let minScore = Infinity
     unvisitedCoors.forEach(unvisitedCoor => {
         const unvisitedCell = grid.get(unvisitedCoor)
