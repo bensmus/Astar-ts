@@ -12,6 +12,8 @@ const clearButton = document.getElementById('clearButton') // Clear path, endpoi
 
 const diagonalCheckbox = document.getElementById('diagonalCheckbox') as HTMLInputElement
 
+const pathInfo = document.getElementById('pathInfo')
+
 const COLS = 30
 const ROWS = 20
 
@@ -174,7 +176,11 @@ export class Grid {
 
     drawPath() {
         console.log('drawing path')
-        console.log(astar(this, diagonalCheckbox.checked) ? 'path found' : 'path not found')
+        if (astar(this, diagonalCheckbox.checked)) {
+            pathInfo.textContent = ''
+        } else {
+            pathInfo.textContent = 'No path'
+        }
     }
 
     clearPath() {
