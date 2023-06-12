@@ -5,10 +5,12 @@ const ctx = canvas.getContext('2d')
 
 const belowCanvas = document.getElementById('belowCanvas')
 
-const toggleButton = document.getElementById('toggleButton')
-const toggleInfo = document.getElementById('toggleInfo')
+const drawObstacleButton = document.getElementById('drawObstacleButton')
+const drawEndpointButton = document.getElementById('drawEndpointButton')
+const eraseButton = document.getElementById('eraseButton')
 
-const clearButton = document.getElementById('clearButton') // Clear path, endpoints, and obstacles.
+const clearAllButton = document.getElementById('clearAllButton') // Clear path, endpoints, and obstacles.
+const clearPathAndEndpointsButton = document.getElementById('clearPathAndEndpointsButton') // Clear path, endpoints, and obstacles.
 
 const diagonalCheckbox = document.getElementById('diagonalCheckbox') as HTMLInputElement
 
@@ -145,32 +147,14 @@ export class Grid {
     }
 
     clickCell(cellCoor: Vector2) {
-        const typeClicked = this.get(cellCoor).type
-
-        if (typeClicked == CellType.Nothing) { // Toggle empty cell.
-            const endpointCount = this.countCell(CellType.Endpoint)
-            if (endpointCount < 2 || userAction.cellType == CellType.Obstacle) { // Can paint.
-                this.set(cellCoor, userAction.cellType)
-                if (userAction.cellType == CellType.Endpoint && endpointCount == 1) { // There are actually two endpoints now.
-                    this.drawPath()
-                }
-            }
+        if (userAction.cellType == CellType.Endpoint && this.countCell(CellType.Endpoint) < 2 || userAction.cellType != CellType.Endpoint) {
+            this.set(cellCoor, userAction.cellType)
         }
-
-        else { // Toggle filled cell, it could be path (do nothing), endpoint, or obstacle.
-            if (typeClicked == CellType.Endpoint) {
-                this.clearPath()
-                const endpoints = this.typeCoorArray(CellType.Endpoint)
-                endpoints.forEach(e => this.set(e, CellType.Nothing))
-            }
-
-            else if (typeClicked == CellType.Obstacle) {
-                this.set(cellCoor, CellType.Nothing)
-                if (this.countCell(CellType.Endpoint) == 2) {
-                    this.clearPath()
-                    this.drawPath()
-                }
-            }
+        if (this.countCell(CellType.Endpoint) == 2) {
+            this.clearPath()
+            this.drawPath()
+        } else {
+            this.clearPath()
         }
     }
 
@@ -185,6 +169,7 @@ export class Grid {
 
     clearPath() {
         console.log('clearing path')
+        pathInfo.textContent = ''
         this.typeCoorArray(CellType.Path).forEach(cell => this.set(cell, CellType.Nothing))
     }
 
@@ -246,7 +231,13 @@ function cellClickHandler(event: MouseEvent, checkDifferent: boolean) {
     }
 }
 
-clearButton.addEventListener('click', () => {grid = new Grid(COLS, ROWS)})
+clearAllButton.addEventListener('click', () => {grid = new Grid(COLS, ROWS)})
+
+clearPathAndEndpointsButton.addEventListener('click', () => {
+    const endpoints = grid.typeCoorArray(CellType.Endpoint)
+    grid.clearPath()
+    endpoints.forEach(coor => grid.set(coor, CellType.Nothing))
+})
 
 document.addEventListener('mousedown', (event) => {
     userAction.isMousePressed = true
@@ -261,12 +252,14 @@ document.addEventListener('mousemove', (event) => {
     }
 })
 
-toggleButton.addEventListener('click', () => {
-    if (userAction.cellType == CellType.Obstacle) {
-        userAction.cellType = CellType.Endpoint
-        toggleInfo.textContent = 'Endpoints'
-    } else {
-        userAction.cellType = CellType.Obstacle
-        toggleInfo.textContent = 'Obstacles'
-    }
+drawObstacleButton.addEventListener('click', () => {
+    userAction.cellType = CellType.Obstacle
+})
+
+drawEndpointButton.addEventListener('click', () => {
+    userAction.cellType = CellType.Endpoint
+})
+
+eraseButton.addEventListener('click', () => {
+    userAction.cellType = CellType.Nothing
 })
