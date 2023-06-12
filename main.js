@@ -12,12 +12,16 @@ const pathInfo = document.getElementById('pathInfo');
 const COLS = 30;
 const ROWS = 20;
 const layout = {
-    padding: {
-        window: 10,
-        canvas: 10
-    },
+    padding: 10,
     cellSize: 30
 };
+const totalWidth = COLS * layout.cellSize + layout.padding;
+const totalHeight = ROWS * layout.cellSize + layout.padding;
+const canvasRect = canvas.getBoundingClientRect();
+canvas.width = totalWidth;
+belowCanvas.style.width = `${totalWidth - 10}px`;
+canvas.height = totalHeight;
+belowCanvas.style.height = `${totalHeight}px`;
 export var CellType;
 (function (CellType) {
     CellType[CellType["Nothing"] = 0] = "Nothing";
@@ -67,14 +71,14 @@ export class Grid {
         ctx.fillRect(0, 0, 1000, 1000);
         ctx.beginPath();
         // Vertical lines.
-        for (let x = layout.padding.canvas; x <= this.cols * layout.cellSize + layout.padding.canvas; x += layout.cellSize) {
-            ctx.moveTo(x, layout.padding.canvas);
-            ctx.lineTo(x, rows * layout.cellSize + layout.padding.canvas);
+        for (let x = layout.padding; x <= this.cols * layout.cellSize + layout.padding; x += layout.cellSize) {
+            ctx.moveTo(x, layout.padding);
+            ctx.lineTo(x, rows * layout.cellSize + layout.padding);
         }
         // Horizontal lines.
-        for (let y = layout.padding.canvas; y <= rows * layout.cellSize + layout.padding.canvas; y += layout.cellSize) {
-            ctx.moveTo(layout.padding.canvas, y);
-            ctx.lineTo(this.cols * layout.cellSize + layout.padding.canvas, y);
+        for (let y = layout.padding; y <= rows * layout.cellSize + layout.padding; y += layout.cellSize) {
+            ctx.moveTo(layout.padding, y);
+            ctx.lineTo(this.cols * layout.cellSize + layout.padding, y);
         }
         ctx.stroke();
     }
@@ -83,8 +87,8 @@ export class Grid {
     }
     set(cellCoor, type) {
         this.get(cellCoor).type = type;
-        const left = cellCoor.x * layout.cellSize + layout.padding.canvas + 1;
-        const top = cellCoor.y * layout.cellSize + layout.padding.canvas + 1;
+        const left = cellCoor.x * layout.cellSize + layout.padding + 1;
+        const top = cellCoor.y * layout.cellSize + layout.padding + 1;
         const edgeLen = layout.cellSize - 2;
         ctx.fillStyle = cellColors.get(type);
         ctx.fillRect(left, top, edgeLen, edgeLen);
@@ -99,7 +103,12 @@ export class Grid {
     }
     // Translate mousePos Vector2 into cell Vector2.
     mousePosToCellCoor(mousePos) {
-        return mousePos.map((mouse) => Math.floor((mouse - layout.padding.canvas - layout.padding.window) / layout.cellSize));
+        // return mousePos.map(
+        //     (mouse) => Math.floor((mouse - layout.padding) / layout.cellSize) // !
+        // )
+        const x = Math.floor((mousePos.x - canvasRect.left) / layout.cellSize);
+        const y = Math.floor((mousePos.y - canvasRect.top) / layout.cellSize);
+        return new Vector2(x, y);
     }
     // Count number of cells of a certain type on grid.
     countCell(type) {
@@ -169,10 +178,6 @@ const userAction = {
     isMousePressed: false // Variable updated by mousedown and mouseup event listeners.
 };
 let grid = new Grid(COLS, ROWS);
-canvas.style.top = `${layout.padding.window}px`;
-canvas.style.left = `${layout.padding.window}px`;
-belowCanvas.style.top = `${layout.padding.window + grid.rows * layout.cellSize + 20}px`; // 20px looks good.
-belowCanvas.style.left = `${layout.padding.window + layout.padding.canvas}px`;
 // Called when mouse is clicked or dragged.
 function cellClickHandler(event, checkDifferent) {
     const mousePos = new Vector2(event.x, event.y);

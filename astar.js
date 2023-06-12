@@ -1,4 +1,4 @@
-import { Vector2, CellType } from "./index.js";
+import { Vector2, CellType } from "./main.js";
 // 1:1 correspondence: N (number) <-> coor (Vector2) <-> cell (Cell)
 export function astar(grid, diagonalFlag) {
     const [[startCoor, targetCoor], isPathFound] = updateGrid(grid, diagonalFlag);

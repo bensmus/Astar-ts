@@ -6,19 +6,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Astar pathing</title>
         <style>
-            canvas {
-                position: absolute;
+            body {
+                font-family: sans-serif;
+            }
+            #myCanvas {
+                /* position: absolute; */
                 cursor: url('img/eraser.png'), default;
             }
             #belowCanvas {
-                position: absolute;
-                font-family: sans-serif;
+                /* position: absolute; */
                 font-size: small;
+                padding: 10px;
             }
             #buttonDiv {
                 display: flex;
                 gap: 5px;
-                align-items:baseline;
+                justify-content: flex-end;
+                align-items: center;
             }
             #toggleInfo {
                 text-align: center;
@@ -26,30 +30,46 @@
             #pathInfo {
                 color: red;
             }
+            #canvasContainer {
+                display: flex;
+            }
+            #besideCanvas {
+                width: min-content;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                gap: 5px;
+                padding: 10px;
+            }
+            #diagonalCheckbox {
+                margin-left: 80%;
+            }
         </style>
     </head>
     <body>
-        <canvas id="myCanvas" width="1000px" height="1000px"></canvas>
+        <p>Draw obstacles and start/end cells on the grid with your mouse</p>
+        <div id="canvasContainer">
+            <canvas id="myCanvas"></canvas>
+            <div id="besideCanvas">
+                <button id="drawObstacleButton">Draw obstacle</button>
+                <button id="drawEndpointButton">Draw endpoint</button>
+                <button id="eraseButton">Erase</button>
+            </div>
+        </div>
+    
         <div id="belowCanvas">
             <div id="buttonDiv">
-                <button id="drawObstacleButton">draw obstacle</button>
-                <button id="drawEndpointButton">draw endpoint</button>
-                <button id="eraseButton">erase</button>
+                <span id="pathInfo"></span>
                 <button id="clearPathAndEndpointsButton">Clear path and endpoints</button>
                 <button id="clearAllButton">Clear all</button>
-                <span id="pathInfo"></span>
             </div>
             <br>
             <div>
                 <input type="checkbox" id="diagonalCheckbox" name="diagonalCheckbox" checked>
                 <label for="diagonalCheckbox">Allow diagonal pathing</label>
             </div>
-            <p>
-                Controls: Click on the grid to add obstacles or endpoints. Once two endpoints are added, a path is generated between them.
-            </p>
-            <a href="https://github.com/bensmus/Astar-ts">Source code</a>
         </div>
         <script type="module" src="astar.js"></script>
-        <script type="module" src="index.js"></script>
+        <script type="module" src="main.js"></script>
     </body>
 </html>

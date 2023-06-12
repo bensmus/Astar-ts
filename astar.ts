@@ -1,4 +1,4 @@
-import { Vector2, CellType, Grid } from "./index.js"
+import { Vector2, CellType, Grid } from "./main.js"
 
 // 1:1 correspondence: N (number) <-> coor (Vector2) <-> cell (Cell)
 export function astar(grid: Grid, diagonalFlag: boolean) {
