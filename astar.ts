@@ -1,9 +1,9 @@
-import { Vector2, CellType, Grid } from "./index"
+import { Vector2, CellType, Grid } from "./index.js"
 
 // 1:1 correspondence: N (number) <-> coor (Vector2) <-> cell (Cell)
 export function astar(grid: Grid, diagonalFlag: boolean) {
     const [[startCoor, targetCoor], isPathFound] = updateGrid(grid, diagonalFlag)
-    let pathCoor = targetCoor
+    let pathCoor: Vector2 | null = targetCoor
     while (pathCoor) {
         console.log(pathCoor)
         if (!pathCoor.isEqual(startCoor) && !pathCoor.isEqual(targetCoor)) {

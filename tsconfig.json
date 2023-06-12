@@ -1,11 +1,3 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist/",
-      "noImplicitAny": true,
-      "module": "ES6",
-      "target": "ES2019", // es2015 has Map. We can't use Map in typescript if our target is too old. Oh, and Array flat method is from 2019.
-      "jsx": "react",
-      "allowJs": true,
-      "moduleResolution": "node"
-    }
+    "compilerOptions": {"target": "ES2020", "module": "ES2020", "strict": true}
 }

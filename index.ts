@@ -1,20 +1,20 @@
-import {astar} from './astar'
+import {astar} from './astar.js'
 
 const canvas = document.getElementById('myCanvas') as HTMLCanvasElement
-const ctx = canvas.getContext('2d')
+const ctx = canvas.getContext('2d')!
 
-const belowCanvas = document.getElementById('belowCanvas')
+const belowCanvas = document.getElementById('belowCanvas')!
 
-const drawObstacleButton = document.getElementById('drawObstacleButton')
-const drawEndpointButton = document.getElementById('drawEndpointButton')
-const eraseButton = document.getElementById('eraseButton')
+const drawObstacleButton = document.getElementById('drawObstacleButton')!
+const drawEndpointButton = document.getElementById('drawEndpointButton')!
+const eraseButton = document.getElementById('eraseButton')!
 
-const clearAllButton = document.getElementById('clearAllButton') // Clear path, endpoints, and obstacles.
-const clearPathAndEndpointsButton = document.getElementById('clearPathAndEndpointsButton') // Clear path, endpoints, and obstacles.
+const clearAllButton = document.getElementById('clearAllButton')! // Clear path, endpoints, and obstacles.
+const clearPathAndEndpointsButton = document.getElementById('clearPathAndEndpointsButton')! // Clear path, endpoints, and obstacles.
 
 const diagonalCheckbox = document.getElementById('diagonalCheckbox') as HTMLInputElement
 
-const pathInfo = document.getElementById('pathInfo')
+const pathInfo = document.getElementById('pathInfo')!
 
 const COLS = 30
 const ROWS = 20
@@ -63,9 +63,9 @@ export class Vector2 {
 class Cell {
     type: CellType
     distance: number
-    parent: Vector2
+    parent: Vector2 | null
 
-    constructor(type: CellType, distance: number, parent: Vector2) {
+    constructor(type: CellType, distance: number, parent: Vector2 | null) {
         this.type = type
 
         // Used by astar
@@ -120,7 +120,7 @@ export class Grid {
         const left = cellCoor.x * layout.cellSize + layout.padding.canvas + 1
         const top = cellCoor.y * layout.cellSize + layout.padding.canvas + 1
         const edgeLen = layout.cellSize - 2
-        ctx.fillStyle = cellColors.get(type)
+        ctx.fillStyle = cellColors.get(type)!
         ctx.fillRect(left, top, edgeLen, edgeLen)
     }
 
