@@ -8,19 +8,19 @@
         <style>
             body {
                 font-family: sans-serif;
+                padding: 10px;
             }
             #myCanvas {
                 /* position: absolute; */
-                cursor: url('img/eraser.png'), default;
+                cursor: url('img/brush.png'), default;
+                /* padding: 10px; */
             }
             #belowCanvas {
                 /* position: absolute; */
                 font-size: small;
-                padding: 10px;
             }
             #buttonDiv {
                 display: flex;
-                gap: 5px;
                 justify-content: flex-end;
                 align-items: center;
             }
@@ -38,16 +38,24 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-end;
-                gap: 5px;
-                padding: 10px;
             }
             #diagonalCheckbox {
                 margin-left: 80%;
             }
+            #infoText {
+                margin-left: 10px;
+            }
+            button {
+                margin: 5px;
+                border: 2px solid lightgray;
+            }
+            #drawObstacleButton {
+                border-color: aqua;
+            }
         </style>
     </head>
     <body>
-        <p>Draw obstacles and start/end cells on the grid with your mouse</p>
+        <div id="infoText">Draw obstacles and start/end cells on the grid with your mouse</div>
         <div id="canvasContainer">
             <canvas id="myCanvas"></canvas>
             <div id="besideCanvas">

@@ -1,13 +1,25 @@
 import {astar} from './astar.js'
 
 const canvas = document.getElementById('myCanvas') as HTMLCanvasElement
-const ctx = canvas.getContext('2d')!
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
 const belowCanvas = document.getElementById('belowCanvas')!
 
-const drawObstacleButton = document.getElementById('drawObstacleButton')!
-const drawEndpointButton = document.getElementById('drawEndpointButton')!
-const eraseButton = document.getElementById('eraseButton')!
+const drawObstacleButton = document.getElementById('drawObstacleButton') as HTMLButtonElement
+const drawEndpointButton = document.getElementById('drawEndpointButton') as HTMLButtonElement
+const eraseButton = document.getElementById('eraseButton') as HTMLButtonElement
+
+const gridEditButtons = [drawObstacleButton, drawEndpointButton, eraseButton]
+
+function updateButtonHighlight(button: HTMLButtonElement, buttons: HTMLButtonElement[]) {
+    buttons.forEach(b => {
+        if (b == button) {
+            b.style.borderColor = 'aqua'
+        } else {
+            b.style.borderColor = 'lightgray'
+        }
+    })
+}
 
 const clearAllButton = document.getElementById('clearAllButton')! // Clear path, endpoints, and obstacles.
 const clearPathAndEndpointsButton = document.getElementById('clearPathAndEndpointsButton')! // Clear path, endpoints, and obstacles.
@@ -145,8 +157,8 @@ export class Grid {
         // return mousePos.map(
         //     (mouse) => Math.floor((mouse - layout.padding) / layout.cellSize) // !
         // )
-        const x = Math.floor((mousePos.x - canvasRect.left) / layout.cellSize)
-        const y = Math.floor((mousePos.y - canvasRect.top) / layout.cellSize)
+        const x = Math.floor((mousePos.x - layout.padding - canvasRect.left) / layout.cellSize)
+        const y = Math.floor((mousePos.y - layout.padding - canvasRect.top) / layout.cellSize)
         return new Vector2(x, y)
     }
 
@@ -217,7 +229,7 @@ cellColors.set(CellType.Endpoint, 'red')
 cellColors.set(CellType.Path, 'yellow')
 
 const userAction = {
-    cellType: CellType.Obstacle, // What type of cell user is placing on grid.
+    cellType: CellType.Obstacle, // What type of cell user is placing on grid. Default is obstacles.
     lastCell: new Vector2(-1, -1), // Last cellCoor user interacted with (to avoid retrigerring).
     isMousePressed: false // Variable updated by mousedown and mouseup event listeners.
 }
@@ -258,12 +270,18 @@ document.addEventListener('mousemove', (event) => {
 
 drawObstacleButton.addEventListener('click', () => {
     userAction.cellType = CellType.Obstacle
+    canvas.style.cursor = "url('img/brush.png'), default"
+    updateButtonHighlight(drawObstacleButton, gridEditButtons)
 })
 
 drawEndpointButton.addEventListener('click', () => {
     userAction.cellType = CellType.Endpoint
+    canvas.style.cursor = "url('img/brush.png'), default"
+    updateButtonHighlight(drawEndpointButton, gridEditButtons)
 })
 
 eraseButton.addEventListener('click', () => {
     userAction.cellType = CellType.Nothing
+    canvas.style.cursor = "url('img/eraser.png'), default"
+    updateButtonHighlight(eraseButton, gridEditButtons)
 })

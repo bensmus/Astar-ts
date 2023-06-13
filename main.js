@@ -5,6 +5,17 @@ const belowCanvas = document.getElementById('belowCanvas');
 const drawObstacleButton = document.getElementById('drawObstacleButton');
 const drawEndpointButton = document.getElementById('drawEndpointButton');
 const eraseButton = document.getElementById('eraseButton');
+const gridEditButtons = [drawObstacleButton, drawEndpointButton, eraseButton];
+function updateButtonHighlight(button, buttons) {
+    buttons.forEach(b => {
+        if (b == button) {
+            b.style.borderColor = 'aqua';
+        }
+        else {
+            b.style.borderColor = 'lightgray';
+        }
+    });
+}
 const clearAllButton = document.getElementById('clearAllButton'); // Clear path, endpoints, and obstacles.
 const clearPathAndEndpointsButton = document.getElementById('clearPathAndEndpointsButton'); // Clear path, endpoints, and obstacles.
 const diagonalCheckbox = document.getElementById('diagonalCheckbox');
@@ -106,8 +117,8 @@ export class Grid {
         // return mousePos.map(
         //     (mouse) => Math.floor((mouse - layout.padding) / layout.cellSize) // !
         // )
-        const x = Math.floor((mousePos.x - canvasRect.left) / layout.cellSize);
-        const y = Math.floor((mousePos.y - canvasRect.top) / layout.cellSize);
+        const x = Math.floor((mousePos.x - layout.padding - canvasRect.left) / layout.cellSize);
+        const y = Math.floor((mousePos.y - layout.padding - canvasRect.top) / layout.cellSize);
         return new Vector2(x, y);
     }
     // Count number of cells of a certain type on grid.
@@ -206,10 +217,16 @@ document.addEventListener('mousemove', (event) => {
 });
 drawObstacleButton.addEventListener('click', () => {
     userAction.cellType = CellType.Obstacle;
+    canvas.style.cursor = "url('img/brush.png'), default";
+    updateButtonHighlight(drawObstacleButton, gridEditButtons);
 });
 drawEndpointButton.addEventListener('click', () => {
     userAction.cellType = CellType.Endpoint;
+    canvas.style.cursor = "url('img/brush.png'), default";
+    updateButtonHighlight(drawEndpointButton, gridEditButtons);
 });
 eraseButton.addEventListener('click', () => {
     userAction.cellType = CellType.Nothing;
+    canvas.style.cursor = "url('img/eraser.png'), default";
+    updateButtonHighlight(eraseButton, gridEditButtons);
 });
